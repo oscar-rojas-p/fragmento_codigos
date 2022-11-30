@@ -1,0 +1,93 @@
+function PostProcBoletoTransaccionReporteTicketValidador(Url, FechaInicio, FechaFin, CodRuta, CodUnidad, CodConductor,
+                                        Tipo, CodValidador, CodBoleto, CodCajaGestionConductor,
+                                        CodSalida, CodControl, Auxiliar1, Auxiliar2, Indice) {
+
+    Data = {
+        FechaInicio: FechaInicio,
+        FechaFin: FechaFin,
+        CodRuta: CodRuta,
+        CodUnidad: CodUnidad,
+        CodConductor: CodConductor,
+        Tipo: Tipo,
+        CodValidador: CodValidador,
+        CodBoleto: CodBoleto,
+        CodCajaGestionConductor: CodCajaGestionConductor,
+        CodSalida: CodSalida,
+        CodControl: CodControl,
+        Auxiliar1: Auxiliar1,
+        Auxiliar2: Auxiliar2,
+        Indice: Indice
+    };
+    $.post(Url, Data, function (Datos) {
+        ObjUtil.QuitarEfectoCargar();
+        $('#iconCargar').css('display', 'none');
+        if (Indice == 94) {
+            var indiceTablas = 0;
+
+            $.each(Datos, function (index, value) {
+                indiceTablas++;
+            });
+
+            $('#tbResumenTickets caption').empty();
+            tbResumenTicketsThead.empty();
+            tbResumenTicketsTbody.empty();
+
+            if (indiceTablas != 3) { $('#tbResumenTickets caption').append('<p class="text-center">No hay informacion para mostrar</p>'); return; }
+
+            var jsonTabla0 = Datos['dt0'];
+            var jsonTabla1 = Datos['dt1'];
+            var jsonTabla2 = Datos['dt2'];
+
+
+            var Row = $('<tr />');
+            $("<th rowspan='2' style='text-align:right;width:20px;vertical-align: middle;' />").text('N').appendTo(Row);
+            $("<th rowspan='2' style='text-align:left;width:100px;vertical-align: middle;' />").text('UNIDAD').appendTo(Row);
+            $("<th rowspan='2' style='text-align:left;width:50px;vertical-align: middle;' />").text('C.VAL').appendTo(Row);
+            $("<th rowspan='2' style='width:82px;vertical-align: middle;' />").text('BOLETO').appendTo(Row);
+
+            $.each(jsonTabla1, function (i) {
+                $("<th  colspan='2' style='text-align: center;' />").html('&nbsp;&nbsp;' + this.DiaSemana + '&nbsp;&nbsp;<br> ' + ObjUtil.FormatYearTwo(this.Fecha)).appendTo(Row);
+                tbResumenTicketsThead.append(Row);
+            });
+
+            var RowHead = $('<tr />');
+            $.each(jsonTabla1, function (i) {
+                $("<th style='text-align: center;' />").html('INI').appendTo(RowHead);
+                $("<th style='text-align: center;' />").html('FIN').appendTo(RowHead);
+                tbResumenTicketsThead.append(RowHead);
+            });
+
+
+            var rowValueDetalle = 0;
+            var contadorRowspan = 1;
+            var claseParaRow = '';
+            $.each(jsonTabla0, function (i, res) {
+                var RowBody = $('<tr />');
+                if (i % jsonTabla2.length == 0) {
+                    if (contadorRowspan % 2 == 0) {
+                        claseParaRow = "estiloRowBlanco";
+                    } else {
+                        claseParaRow = "estiloRowGris";
+                    }
+
+                    $("<td rowspan='" + jsonTabla2.length + "' class='" + claseParaRow + "' style='text-align:center;vertical-align:middle' />").html(contadorRowspan++).appendTo(RowBody).fadeIn("slow");
+                    $("<td rowspan='" + jsonTabla2.length + "' class='" + claseParaRow + "' style='text-align:center;vertical-align:middle' />").html(this.PadronUnidad + '<br>' + this.PlacaUnidad).appendTo(RowBody).fadeIn("slow");
+                    $("<td rowspan='" + jsonTabla2.length + "' class='" + claseParaRow + "' style='text-align:center;vertical-align:middle' />").html(this.CodValidador).appendTo(RowBody).fadeIn("slow");
+                }
+                $("<td class='" + claseParaRow + "' />").html(this.NomBoleto).appendTo(RowBody);
+                $.each(jsonTabla1, function (i, resDeta) {
+                    //     if (Auxiliar1 == "Cantidad") {
+                    rowValueDetalle = (res[resDeta["Fecha"]] == null ? 0 : res[resDeta["Fecha"]]);
+
+                    $("<td class='colorRowInicial " + claseParaRow + "' style='text-align:center;width: 100px;' />").text(rowValueDetalle == 0 ? ' ' : (rowValueDetalle.split('-')[0])).appendTo(RowBody).fadeIn("slow");
+
+                    $("<td class='rowSd " + claseParaRow + "' style='text-align:center;width: 100px;' />").text(rowValueDetalle == 0 ? ' ' : (rowValueDetalle.split('-')[1])).appendTo(RowBody).fadeIn("slow");
+                    //} else {
+                    //    $("<td class='rowSd' style='text-align:right;' />").text(res[resDeta["Fecha"]] == null ? 0 : (res[resDeta["Fecha"]]).toFixed(2)).appendTo(RowBody).fadeIn("slow");
+                    //}
+                });
+                tbResumenTicketsTbody.append(RowBody);
+            });
+        }
+    }, 'json');
+}
