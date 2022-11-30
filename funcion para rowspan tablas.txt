@@ -1,0 +1,59 @@
+async function llenarTablaProductosActividades() {
+    const tbodyAct = tablaProductosActividades.getElementsByTagName('tbody')[0];         
+    tbodyAct.innerHTML = '';
+    let codProyecto = document.querySelector('#select-filtro-proyecto').value;    
+    const data={
+        Procedimiento: "gpy.ProcProductoActividad",
+        Parametro: codProyecto,
+        Indice:10
+    }
+    const response = await fetch(urlGeneral, DataFetch(data, 'POST')).then(res => res.json());
+    const actividades = response['dt0'];
+    if (actividades.length == 0) {
+        let strCuerpo = '';
+            strCuerpo += `<tr><td colspan="10" style="text-align:center">No hay información que mostrar con los parametros seleccionados</td><tr>`;
+            tbodyAct.innerHTML = strCuerpo;
+            $('#iconCargar').css("display", "none");
+            return;
+    }        
+        actividades.forEach((act, i) => {
+            const tr = document.createElement('tr');
+            tr.setAttribute('class', 'colorear option')
+            tr.addEventListener('click', () => pintarTrJs(tr));      
+            tr.innerHTML = `           
+                <td data-sort="string" style="font-size:17px;vertical-align:middle;text-align:center;">${primeraLetraMayuscula(act.NomProducto)} </br> ${mostrarTipo(act.ProductoFinal ? 1 : 0)}</td>
+                <td data-sort="string" style="border-left:0.5px solid;border-color:#ACADBF;vertical-align:middle;text-align:center;">${primeraLetraMayuscula(act.NomProductoComponente)}</td>
+                <td data-sort="string" style="border-left:0.5px dashed;border-color:#ACADBF;vertical-align:middle;text-align:left;">&nbsp;&nbsp;${primeraLetraMayuscula(act.NomProductoArticulo)}</td>
+                <td data-sort="string" style="border-left:0.5px inset;vertical-align:middle;text-align:left;">&nbsp;&nbsp;${primeraLetraMayuscula(act.NomActividad)}</td>
+                <td data-sort="string" style="vertical-align:middle;text-align:center;">${act.CantidadUtiliza}</td>
+                <td class="editar-act actividades-per" data-sort="string" style="text-align:center;vertical-align: middle;"><button style="height: 23px;" class="btn btn-primary btn-xs btn-dialog"><span class="fas fa-pen" aria-hidden="true"></span></button></td>
+                <td><p class="eliminar-act"><button class="btn btn-danger btn-xs info" title="Eliminar" style="height: 23px;"><span class="glyphicon glyphicon-trash"></span></button></p></td>    
+                `
+                tr.querySelector('.editar-act').addEventListener('click', () => abrirNuevoEditarActividad(act));
+                tr.querySelector('.eliminar-act').addEventListener('click', () => eliminarActividad(act));
+                tbodyAct.appendChild(tr);
+        })
+        $('#iconCargar').css("display", "none");
+        
+        const table = tablaProductosActividades
+        let headerCell2 = null;
+        for (let row of table.rows) {
+            const firstCell2 = row.cells[1];
+            if (headerCell2 === null || firstCell2.innerText !== headerCell2.innerText) {
+                headerCell2 = firstCell2;
+            } else {
+                headerCell2.rowSpan++;
+                firstCell2.remove();
+            }
+        }
+        
+        for (let row of table.rows) {
+            const firstCell2 = row.cells[0];
+            if (headerCell2 === null || firstCell2.innerText !== headerCell2.innerText) {
+                headerCell2 = firstCell2;
+            } else {
+                headerCell2.rowSpan++;
+                firstCell2.remove();
+            }
+        }
+}
