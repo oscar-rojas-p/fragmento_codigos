@@ -1,0 +1,30 @@
+//ordenar meses
+                    var l = jsondata.length;
+                    var aux=[];
+                    for (let i = 0; i < l; i++ ) {
+                        for (let j = 0; j < l - 1 - i; j++ ) {
+                            if ( jsondata[ j ].FechaInicio?.slice(3,5) > jsondata[ j + 1 ].FechaInicio?.slice(3,5) ) {
+                                aux=jsondata[j];
+                                jsondata[j]=jsondata[j+1];
+                                jsondata[j+1]=aux;
+                            }
+                        }
+                    }
+//ordenar dias
+	let m=0;
+	var contLong=0;
+	for (let i = 1; i <= 12; i++ ) {
+		var igualMeses = (jsondata.filter(per => per.FechaInicio.slice(3,5))?jsondata.filter(per => per.FechaInicio.slice(3,5)==i):0);
+		if(igualMeses.length!=0){
+			for (let i = 0; i < igualMeses.length; i++ ) {
+				for (let j=0 ; j < igualMeses.length - 1 - i; j++ ) {
+					if ( jsondata[ j+contLong ].FechaInicio?.slice(0,2) > jsondata[ j+contLong + 1 ].FechaInicio?.slice(0,2) ) {
+						aux=jsondata[j+contLong];
+						jsondata[j+contLong]=jsondata[j+contLong+1];
+						jsondata[j+contLong+1]=aux;
+					}
+				}
+			}
+			contLong=contLong+igualMeses.length;
+		}
+	}
