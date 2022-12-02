@@ -1,0 +1,1385 @@
+-----AQUI ES DONDE DEBO IMPLEMENTAR LA CAJA CON LOS CHECKBOX-----
+
+
+@{
+    ViewBag.Title = @ViewBag.NomMenu;
+    Layout = "~/Views/Shared/_LayoutBoletoElectronico.cshtml";
+}
+<script src="~/Scripts/Entidades/CuentasXCobrar.js@("?v="+ DateTime.Now.ToString("yyyyMMddhmmss"))"></script>
+<script src="~/Scripts/Entidades/ImpresionDocumentos.js@("?v="+ DateTime.Now.ToString("yyyyMMddhmmss"))"></script>
+<script src="~/Scripts/ImpresionDirecta/ImpresionDirecta.js@("?v="+ DateTime.Now.ToString("yyyyMMddhmmss"))"></script>
+
+<style>
+    fieldset.scheduler-border {
+        border: 2px groove white !important;
+        padding: 0px;
+        /*-webkit-box-shadow: 0px 0px 0px 0px #000;*/
+        box-shadow: 0px 0px 0px 0px #000;
+        padding-left: 24px;
+        padding-left: 13px;
+        padding-bottom: 10px;
+    }
+
+    legend.scheduler-border {
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+
+    legend {
+        font-size: 16px;
+        margin-bottom: 0;
+    }
+
+    .control-label {
+        padding-top: 5px;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .documento:hover {
+        cursor: pointer;
+        text-decoration: underline;
+        color: #36aae7;
+    }
+
+    .amortizar {
+        height: 20px;
+        padding-top: 0px;
+        padding-left: 8px;
+        padding-right: 8px;
+        margin-bottom: 1px;
+    }
+
+    input, select {
+        margin-bottom: 5px;
+    }
+
+        input[type="text"] {
+            height: 28px;
+        }
+
+    select {
+        height: 32px !important;
+    }
+
+
+    .well {
+        padding-top: 7px;
+        padding-bottom: 6px;
+    }
+
+    #tbVenta tbody tr td div i {
+        padding-top: 5px;
+    }
+
+    #tbVentaProductos tbody tr td span {
+        vertical-align: sub;
+    }
+
+    .scroolBar4Filas {
+        max-height: 145px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    .labelsinNegrita {
+        font-weight: 100;
+    }
+
+    .ui-autocomplete {
+        width: 310px !important;
+    }
+
+    #tablaCangeDocumento tbody tr td span {
+        vertical-align: sub;
+    }
+
+    .estiloColumnaEditar {
+        display: inline-block;
+        font-weight: 100;
+        width: 300px;
+        text-decoration: underline;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .estiloColumnaCondicion {
+        font-weight: 100;
+        width: 115px;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .estiloColumnaCondicionPago {
+        display: inline-block;
+        font-weight: 100;
+        /*width: 300px;*/
+        text-decoration: underline;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    /*estilos para el switch  el mejorado cheklist*/
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 53px;
+        height: 26px;
+    }
+
+        .switch input {
+            display: none;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            /*bottom: 4px;*/
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+        height: 20px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    /*fin del chelist*/
+</style>
+
+<script src="~/Scripts/Print.js@("?v="+ DateTime.Now.ToString("yyyyMMddhmmss"))"></script>
+
+<div class="contenedorPrincipal">
+    <div id="divParametros" class="sombraFueraDeMapa">
+
+        <div style="float:right; margin-top: 1px">
+            <div id="divInputBusqueda">
+                <input id="txtBuscar" type="text" placeholder="Búsqueda" autocomplete="off">
+                <input type="text" placeholder="Búsqueda" style="display:none" autocomplete="off">
+            </div>
+            <div id="divBtnBuscar">
+                <button id="btnBusquedaTabla" title="Búsqueda" class="infoBusqueda">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <div style="float: left;" class="margenDivParametros">
+            <div style="float:left; display: flex">
+                <select id="selectTipoConsulta" onchange="changeFilter()" style="margin-top: 2px">
+                    <option value="0">Rango de Fechas</option>
+                    <option value="1">Consolidado</option>
+                </select>
+                <div id="divFechas" style="display: flex; margin-top: 3px !important;">                    
+                    <i title="Fecha Inicio" class="fa fa-calendar tooltipstered" aria-hidden="true" style="padding-top: 5px; font-size: 18px; top: 19px; cursor: pointer; margin-left: 10px;"></i>
+                    <input type="text" id="txtFechaInicio" autocomplete="off" style="width: 105px;margin-left:10px" value="@DateTime.Now.AddDays(-7).ToString("dd/MM/yyyy")">
+                    <i title="Fecha Fin" class="fa fa-calendar tooltipstered" aria-hidden="true" style="padding-top: 5px;font-size: 18px; top: 19px; cursor: pointer; margin-left: 10px;"></i>
+                    <input type="text" id="txtFechaFin" autocomplete="off" style="width: 105px; margin-left: 10px" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                </div>
+                <div style="margin-top: 9px !important;">
+                    <i title="Cliente" class="fa fa-user" aria-hidden="true" style="font-size: 18px; cursor: pointer; margin-left: 10px;"></i>
+                </div>
+                <div style="margin-left: 10px;margin-top:4px">
+                    <select id="selClientes" style="width:350px !important;height:100% !important; margin-right: 10px;"></select>
+                </div>
+                <div style="margin-left: 10px;margin-top:4px">
+                    <select id="selectEstado" onchange="listarDeudas()" style=" margin-right: 10px;"></select>
+                </div>
+                <button title="Procesar" id="Procesar" type="button" onclick="listarDeudas();" style="margin-left: 8px; margin-right: 8px; background-color: #3286ecb5;">
+                    <i id="iconCargar" class="fa fa-spinner fa-spin" style="display: none; color: #fff; font-size: 20px;margin-right:2px"></i><i class="fa fa-chevron-right" aria-hidden="true" style="font-size: 20px; color: white;">
+                    </i>
+                </button>
+            </div>
+            <div style="float:left; display: inline">
+                <input id="txt" style="display:none" />
+                <button title="Exportar a Excel" id="btnExport" onclick="exportarinformacion();" style="margin-left: 5px;"><img src="~/Images/logo/icoExcel.png" /></button>
+            </div>
+        </div>
+        <div id="DivlblTitulo">
+            <h2 id="lblTitulo" style="margin-top: 15px;">@ViewBag.NomMenu.Split('|')[0]</h2>
+        </div>
+    </div>
+
+    <div id="divTablas" class="" style="margin:0px">
+        <table id="tbCuentas" class="table table-bordred table-striped" style="margin-top: 0px">
+            <thead>
+                <tr>
+                    <th>N</th>
+                    <th title="Fecha Venta" style="width:120px">F.VENTA</th>
+                    <th title="Fecha Cancelada" style="width:120px">F.CANCEL</th>
+                    <th style="width:270px">DOCUMENTO</th>
+                    <th>MONEDA</th>
+                    <th>CLIENTE</th>
+                    <th style="text-align: right">IMPORTE</th>
+                    <th style="text-align: right">PAGADO</th>
+                    <th style="text-align: right">SALDO</th>
+                    <th style="text-align: center">U.CREACIÓN</th>
+                    @* estiloColumnaCondicion *@
+                    <th style="text-align: center;" class="">CONDICIÓN</th>
+                    <th style="text-align: center"></th>
+                    <th style="text-align: center">ACCIÓN</th>
+                    <th style="text-align: center;width:40px"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="divDetalleCuenta" style="display: none;padding-bottom:0px;">
+        <div class="form-group" style="width:100%;height:100%;margin:0px;max-height:400px">
+            <table id="tbDetalleCuentas" class="table table-bordred table-striped">
+                <thead>
+                    <tr>
+                        <th>N</th>
+                        <th>RECIBÍ DE</th>
+                        <th>FECHA Y HORA</th>
+                        <th>USUARIO</th>
+                        <th style="text-align:right">IMPORTE</th>
+                        <th style="text-align:right">SALDO</th>
+                        <th style="text-align:center">ESTADO</th>
+                        <th style="text-align:right"></th>
+                        <th style="text-align:right"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="tbDetalleCuentasImpresion" class="table table-bordred table-striped" style="display: none">
+                <thead>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    @* ------------------------------------------------------------------------------------------------------------------------------------ *@
+    <style>
+        .overview {
+            position: absolute;
+            top: 0;
+            border: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            width: 100%;
+            opacity: 0.1;
+            height: 100%;
+        }
+
+        /* .position_left {
+            position: absolute;
+            bottom: 8px;
+            left: 20px;
+        */
+    </style>
+
+
+    <div id="divRegistroPago" style="display: flex;position:relative" class="modal modal-fixed-footer ui-dialog-content ui-widget-content">
+        <div style="border-right: 3px solid rgb(100, 135, 177);width:68%">
+            <div class="well">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">
+                        Datos Generales
+                    </legend>
+                    <br>
+                    <table style="width:99%">
+                        <tr>
+                            <td>
+                                <div style="display:flex;margin-top:-15px">
+                                    <div style="width:59%">
+                                        <label class="labelsinNegrita">Cliente: </label>
+                                        <div>
+                                            <input id="txtcliente" type="text" class="form-control" readonly />
+                                        </div>
+                                    </div>
+                                    <div style="margin-left:18px;width:38%">
+                                        <label class="labelsinNegrita">Documento Deuda: </label>
+                                        <div>
+                                            <input type="text" class="form-control" id="txtDocumento" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display:flex">
+                                    <div style="margin-left:18px">
+                                        <label class="labelsinNegrita">Moneda Deuda: </label>
+                                        <div>
+                                            <select disabled="disabled" id="selectMonedaDeuda" style="width:100%;margin-top:-2px"></select>
+                                        </div>
+                                    </div>
+                                    <div style="margin-left:18px">
+                                        <label class="labelsinNegrita">Deuda: </label>
+                                        <div>
+                                            <input type="text" class="form-control" id="txtDeudaTotal" style="width:130px;text-align: right" readonly>
+                                        </div>
+                                    </div>
+                                    <div style="margin-left:18px">
+                                        <label class="labelsinNegrita">Saldo: </label>
+                                        <div>
+                                            <input type="text" class="form-control" id="txtSaldoDeuda" style="width: 130px; text-align: right" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </div>
+
+            <div class="table-responsive " style="margin-bottom:-5px">
+                <table id="tablaCangeDocumento" class="table table-bordred table-striped">
+                    <thead>
+                        <tr>
+                            <th>N</th>
+                            <th>NOMBRE</th>
+                            <th style="display:none">DESCRIPCION</th>
+                            <th>SERIE</th>
+                            <th style="width:60px" title="Cantidad">CANTIDAD </th>
+                            <th style="width:100px;text-align:center" title="Precio Unitario">P.UNIT </th>
+                            <th style="width:40px">IMPORTE</th>
+                            <th style="width:40px"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="scroolBar4Filas"></tbody>
+
+                </table>
+            </div>
+            <div>
+                <table class="table table-bordred table-striped">
+                    <tbody>
+                        <tr>
+                            <td style="width: 82%; background: white; border-top: 0px solid white; "></td>
+                            <th>
+                                Sub.Total:
+                            </th>
+                            <td style="width:20%;text-align:right">
+
+                                <span id="inputSubtotal" class="tamSpanCantidad" style="margin-right: 13px;"></span>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 82%; background: white; border-top: 0px solid white; "></td>
+                            <th>
+                                IGV:
+                            </th>
+                            <td style="width: 20%; text-align: right; background: #eeeeee">
+                                <span id="inputIGV" class="tamSpanCantidad" style="margin-right: 13px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 82%; background: white;border-top:0px solid white "></td>
+                            <th>
+                                Total:
+                            </th>
+                            <td style="width:20%;text-align:right">
+                                <span id="inputTotal" class="tamSpanCantidad" style="margin-right: 13px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <textarea class="form-control noresize temporal actualizable" onfocus="this.select()" style="resize:none;width:98%" rows="4" id="txtDescripcion" onkeypress="return ObjUtil.sinCaracteresEspeciales(event, this);" placeholder="Comentario Venta"></textarea>
+        </div>
+        <div style="width:32%">
+
+            <div class="well">
+                <div style="width:100%">
+                    <table style="width:98%">
+                        <tr>
+                            <td colspan="3">
+                                <div>
+                                    <button id="botonDeuda" style="margin-bottom:5px" type="button" class="btn btn-primary">DEUDA</button>
+                                    <button id="botonPreImpresion" onclick="PreImpresionReciboPago()" style="margin-bottom:5px" type="button" class="btn btn-primary">PRE-IMPRESION</button>
+                                    <button id="botonDetraccion" onclick="abrirModalDetraccion()" style="display:none;margin-bottom:5px" type="button" class="btn btn-primary">DETRACCIÓN</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">
+                        Datos Pago
+                    </legend>
+                    <br>
+                    <div style="display:flex">
+                        <div style="width:100%">
+                            <table style="width:98%">
+                                <tr>
+                                    <td>
+                                        @*  *@
+                                        <table style="width:98%">
+                                            <tr>
+                                                <td>Tipo Doc</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <select id="selectTipoDocumento" onchange="obtenerSerieCorrelativo()" style="width:100%;"></select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ser/Corr</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <div style="display:flex">
+                                                        <input id="inputSerie" readonly="readonly" type="text" name="name" value="" style="width: 66px; text-align: center" />
+                                                        <input id="inputCorrelativo" readonly="readonly" type="text" name="name" value="" style="width: 135px;text-align:center" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Fecha</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <div style="display:flex">
+                                                        <input type="text" id="txtFecha" autocomplete="off" style="width: 105px" value="@DateTime.Now.AddDays(+0).ToString("dd/MM/yyyy")" />
+                                                        <i title="Fecha Emision" class="fa fa-calendar tooltiplabel tooltipstered" aria-hidden="true" style="vertical-align: sub;margin-top:5px; font-size: 18px; top: 5px; cursor: pointer; margin-left: 10px;"></i>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style="display:none">
+                                                <td>Tipo Pago</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <select id="formaPago" style="width:100%;"></select>
+                                                </td>
+                                            </tr>
+                                            <tr style="display:none">
+                                                <td>C.Pago</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <select id="selectCondicionPago" passive="true" style="width: 100%">
+                                                        <option value="1">Contado</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Moneda</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <select id="selectMoneda" onchange="accionTipoCambio()" passive="true" style="width: 100%"></select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>P. Cancel.</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <label class="switch " style="margin-top: 0px; ">
+                                                        <input id="checkMontoPagado" onchange="DatosPagoCancelado();" type="checkbox"  />
+                                                        <span class="slider round" style="margin-top:8px"></span>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                            <tr id="tipoPagoBrutoDetraccion">
+                                                <td title="Tipo de Pago Concepto">T.Pago</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <select id="TipoPagoConcepto" onchange="ActualizarAmortizacionPorTipoPago()" style="width:100%">
+                                                        <option></option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr id="FilaAutoDetraccion" style="display:none">
+                                                <td title="Auto Detracción">Auto Det.</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <div class="" style="text-align: left">
+                                                        <label class="switch" style="margin: 0;margin-top: 10px;">
+                                                            <input id="InputAutoDetraccion" type="checkbox">
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                    </div>
+                                                </td>                
+                                            </tr>
+                                            <tr>
+                                                <td>Amortización</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <input type="text" autocomplete="off" class="form-control" id="txtAmortizacion" style="text-align: right" onkeypress="return ObjUtil.SoloDecimal(event, this);" onkeyup="actualizarSaldo()" onkeydown="comprobarEnterAmortizacion(event)"  onblur="convertirDecimal($(this))">
+                                                </td>
+                                            </tr>
+                                            <tr class="vistaAmortizacion" style="display:none">
+                                                <td title="Tipo de Cambio">T.Cambio</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <input id="txtTipoCambio" readonly="readonly" type="text" class="form-control" onkeyup="actualizarSaldo()" style="text-align: right" onkeypress="return ObjUtil.SoloDecimal(event, this);" onkeydown="    comprobarEnterAmortizacion(event)" onclick="    $(this).focus().select()" onblur="convertirDecimal($(this))">
+                                                </td>
+                                            </tr>
+                                            <tr class="vistaAmortizacion" style="display:none">
+                                                <td>Amortización</td>
+                                                <td style="width:10px">:</td>
+                                                <td>
+                                                    <input type="text" readonly="readonly" class="form-control" id="txtMontoAmortizacion" style="text-align: right; " onkeypress="return ObjUtil.SoloDecimal(event, this);" onkeyup="actualizarSaldo()" onkeydown="comprobarEnterAmortizacion(event)" onclick="$(this).focus().select()">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        @*  *@
+                                    </td>
+                                </tr>
+                                <tr id="DivRecibiDe">
+                                    <td>
+                                        <div>
+                                            <label class="labelsinNegrita">Recibí de: </label>
+                                            <div>
+                                                <input type="text" class="form-control" id="txtRecibiDe" onkeydown="comprobarEnterGuardar(event)" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="ComentarioPago">
+                                    <td>
+                                        <div>
+                                            <label class="labelsinNegrita">Comentario Pago: </label>
+                                            <div>
+                                                <input type="text" class="form-control" id="txtComentario" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <div id="overview-divRegistroPago" class="overview" style="display: none;">
+
+        </div>
+    </div>
+
+    <div id="VentanaCuotas">
+        <div class="form-group" style="overflow: auto;">
+            <table id="tbDetalleCuotasXCuenta" class="table table-bordred table-striped">
+                <thead></thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+        <div id="overview-VentanaCuotas" class="overview" style="display: none;">
+
+        </div>
+    </div>
+    <div id="divamortizarapago">
+        <div class="form-group" style="overflow: auto;">
+            <div style="margin-bottom:12%;margin-top:2%">
+                <div class="col-lg-3" style="margin-left:-4%">
+                    <label class="">F. Pago: </label>
+                </div>
+                <div class="col-lg-8">
+                    
+                    <input type="text" class="form-control" id="inputFechaPago" value="@DateTime.Now.ToString("dd/MM/yyyy")" style="width:60%">
+                    <i title="Fecha Fin" class="fa fa-calendar tooltiplabel tooltipstered" aria-hidden="true" style="POSITION: absolute;TOP: 12%;left: 65%;font-size: 140%;"></i>
+                </div>
+            </div>
+            <div>
+                <label class="">Recibí de: </label>
+                <div>
+                    <input type="text" class="form-control" id="inputRecibiDe">
+                </div>
+            </div>
+            <div>
+                <label class="">Comentario Pago: </label>
+                <div>
+                    <input type="text" class="form-control" id="inputComentarioPago">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divAnularAmortizacion" style="display: none;">
+        <div class="form-horizontal margenTopParaModal" style="text-align: center;" role="form">
+            <div>
+                <img src="../Images/icoInterroga40x40.png">&nbsp;&nbsp;&nbsp;
+                <span>Está seguro de realizar la operación?</span>
+            </div>
+            <p>Motivo</p>
+            <div>
+                <textarea id="txtAreaElimina" style="width:100%; resize: none"></textarea>
+            </div>
+        </div>
+    </div>
+
+    @* Imprimir Voucher *@
+    <div id="divImprimir" style="width:200px;display: none;font-size:17px !important;font-family: 'Arial Black', Gadget, sans-serif !important;">
+        <style>
+            .Prueba {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 17px !important;
+            }
+
+            .fuente1 {
+                font-size: 15px;
+            }
+
+            .fuente2 {
+                font-size: 18px;
+            }
+
+            .fuente3 {
+                font-size: 11px;
+            }
+
+            td {
+                /*padding: 5px;*/
+            }
+
+            .centrado {
+                text-align: center;
+            }
+
+            table tr {
+                padding: 0;
+                margin: 0;
+                height: 20px !important;
+            }
+
+            th {
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                padding: 3px 0;
+            }
+
+            .textoTituloImprimir {
+                font-size: 25px;
+                font-weight: bold;
+                text-align: center;
+                font-family: Arial, Helvetica, sans-serif;
+                margin-bottom: 0;
+                margin-top: 0;
+                padding-bottom: 0;
+                padding-top: 0;
+            }
+        </style>
+
+        <div style="width: 9cm; text-align: center">
+            <p id="lblNombreDocumento" style="font-size: 22px; font-weight: bold; text-align: center;font-family: Arial, Helvetica, sans-serif;margin-bottom:0;margin-top:0;padding-bottom:0;padding-top:0"></p>
+        </div>
+        <div style="width: 9cm; text-align: center">
+            <p id="lblSubTitulo" style="font-size: 22px; font-weight: bold; text-align: center; font-family: Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top: 0; padding-bottom: 0; padding-top: 0; "></p>
+        </div>
+
+        <table class="Prueba">
+            <tr>
+                <td colspan="3">_________________________________
+                <td>
+            </tr>
+            <tr>
+                <td>Doc. Pagado</td>
+                <td>:</td>
+                <td id="lblDocumento" style="text-align: left;"></td>
+            </tr>
+
+            <tr>
+                <td>F. Pago</td>
+                <td>:</td>
+                <td id="lblFechaPago" style="text-align: left;"></td>
+            </tr>
+            <tr>
+                <td>Recibí de</td>
+                <td>:</td>
+                <td id="lblRecibiDe" style="text-align: left;"></td>
+            </tr>
+
+            <tr>
+                <td>Cajero</td>
+                <td>:</td>
+                <td id="lblCajero" style="text-align: left;"></td>
+            </tr>
+            <tr>
+                <td colspan="3">_________________________________
+                <td>
+            </tr>
+            <tr style="font-weight:bold;font-size:20px;">
+                <td>Importe</td>
+                <td>:</td>
+                <td style="text-align:right;" id="lblImporte"></td>
+            </tr>
+
+            <tr style="font-weight:bold;font-size:20px;">
+                <td>Saldo</td>
+                <td>:</td>
+                <td style="text-align:right;" id="lblsaldoproduccion"></td>
+            </tr>
+            <tr>
+                <td colspan="3">_________________________________
+                <td>
+            </tr>
+
+            <tr>
+                <td>U.Impresión</td>
+                <td>:</td>
+                <td id="txtNombreUsuario" style="text-align: left;"></td>
+            </tr>
+            <tr>
+                <td style="width:100px;">F.Impresión</td>
+                <td>:</td>
+                <td style="text-align: left;" id="lblfechaImpresion"></td>
+            </tr>
+        </table>
+        <br />
+        <p style="font-size: 14px; font-weight: bold; text-align: left; font-family: Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top: 0; padding-bottom: 0; padding-top: 0; " id="textreeimpresion"></p>
+    </div>
+
+
+
+    <div id="modalDetracciones" class="modal modal-fixed-footer ui-dialog-content ui-widget-content">
+        <div style="display:flex">
+            <select id="selectDetraccion" style="height:30px !important" onchange="actualizarInputDetraccion()"></select>
+            <input id="inputDetraccion" type="text" name="name" maxlength="20" style="margin-left:5px;width:180px" />
+
+        </div>
+    </div>
+
+</div>
+@* **************************************** *@
+
+<script>
+    var urlGeneral = NombreAplicacion + '/GeneralPost/ProcGeneralPost';
+    var COMPARACION_MONEDAS = {
+        IGUALES: 1,
+        DIFERENTES: 2
+    }
+
+    var MONEDA = { //solo para validar
+        SOLES: 1,
+        DOLARES: 2
+    }
+    var cantidadEnters = 0;
+
+    var CANTIDAD_DEFECTO = 1; //cantidad de productos
+
+    $(document).ready(function () {
+        if (codCajaGestion == "" || codCajaGestion == 0) {
+            $('.contenedorPrincipal').html("");
+            ObjUtil.MostrarMensaje("No cuenta con caja aperturada para la venta", 0);
+        } else {
+            getMonedas();
+
+            $('#txtBuscar').keyup(function () {
+                $.uiTableFilter($('#tbCuentas'), this.value);
+            });
+
+
+            $('#selClientes').change(function () {
+                listarDeudas();
+            })
+            ObjUtil.Modal($('#divDetalleCuenta'), 'auto', '1200px', true, false, false, true, 'Detalle');
+            ObjUtil.Modal($('#divRegistroPago'), 'auto', '1200px', false, false, false, true, 'Registro Pago');
+            ObjUtil.Modal($('#divAnularAmortizacion'), 'auto', 'auto', false, false, false, true, 'Anular Amortización');
+            ObjUtil.Modal($('#modalDetracciones'), 'auto', 'auto', false, false, false, true, 'Detraccion');
+            ObjUtil.Modal($('#VentanaCuotas'), '500', 'auto', false, false, false, true, 'Detraccion');
+            ObjUtil.Modal($('#divamortizarapago'), 'auto', '400px', false, false, false, true, '');
+            changeFilter();
+            ObtenerEstadoDocumentos();
+            cargarClientes();
+            obtenerTipoCambio();
+            obtenercomboDetraccion();
+            $('#txtFecha').datepicker({
+                dateFormat: 'dd/mm/yy',
+                maxDate: '+0D'
+            });
+            $('#txtFechaInicio').datepicker({
+                dateFormat: 'dd/mm/yy',
+                maxDate: '+0D'
+            });
+            $('#txtFechaFin').datepicker({
+                dateFormat: 'dd/mm/yy',
+                maxDate: '+0D'
+            }); 
+            $('#inputFechaPago').datepicker({
+                dateFormat: 'dd/mm/yy',
+            });
+        }
+    });
+
+    function ObtenerEstadoDocumentos() {
+        return "";
+        var estadoDocumentos = $('#estadoDocumentos');
+        Data = {
+            Procedimiento: "ProcProveedor",
+            Parametro: '',
+            Indice: 11
+        }
+        $.getJSON(urlGeneral, Data, function (Datos) {
+            var htmlDatosEstado = '';
+            estadoDocumentos.empty();
+            $.each(Datos["dt0"], function () {
+                htmlDatosEstado += '<option value="' + this.CodEstado + '" title="' + this.NombreEstado + '">' + this.NombreEstado + '</option>';
+            });
+            estadoDocumentos.append(htmlDatosEstado)
+        });
+    }
+
+
+
+    function obtenerTipoCambio() {
+        Data = {
+            Procedimiento: "ProcVenta",
+            Parametro: '',
+            Indice: 11
+        }
+        $.getJSON(urlGeneral, Data, function (Datos) {
+            var htmlDatosCondicionPago = '';
+            $('#formaPago').empty();
+            $.each(Datos["dt0"], function () {
+                htmlDatosCondicionPago += '<option value="' + this.CodVentaFormaPago + '">' + this.NomVentaFormaPago + '</option>';
+            });
+            $('#formaPago').append(htmlDatosCondicionPago);
+        });
+    }
+
+    function exportarinformacion() {
+        var opciones = {
+            sistema: 'REPORTE DE CUENTAS POR COBRAR',
+            title: 'REPORTE DE CUENTAS POR COBRAR',
+            filename: 'REPORTE DE CUENTAS POR COBRAR',
+            empresa: nomEmpresa,
+        }
+        var parametros = {
+            ruc: Ruc,
+            nomUsuario: NomUsuario,
+            fechaInicio: ObjUtil.ObtenerFechaActual(),
+        }
+        fnExcelReport("tbCuentas", opciones, parametros, "REPORTE DE CUENTAS POR COBRAR");
+    }
+
+    function changeFilter() {
+        const tipoConsulta = document.getElementById("selectTipoConsulta");
+        const divFechas = document.getElementById("divFechas");
+
+        if (tipoConsulta.value == 1) {
+            divFechas.style.display = "none";    
+        } else {
+            divFechas.style.display = "";
+        }
+    }
+
+    function listarDeudas() {
+        var codCliente = $('#selClientes').val();
+        var codEstado = $('#selectEstado').val();
+        var fechaInicio = $('#txtFechaInicio').val();
+        var fechaFin = $('#txtFechaFin').val();
+        const tipoConsulta = document.getElementById("selectTipoConsulta");
+
+        Data = {
+            Procedimiento: 'ProcVentaDeuda',
+            Parametro: codCliente + '|' + codEstado + '|' + tipoConsulta.value + '|' +fechaInicio + '|' + fechaFin,
+            Indice: 10
+        }
+        $.getJSON(urlGeneral, Data, function (Datos) {
+            
+            var jsonData = Datos['dt0'];
+            $('#tbCuentas tbody').empty();
+            var strCuerpo = '';
+
+            if (jsonData.length == 0) {
+                strCuerpo = '<tr>' +
+                                '<td colspan="14" style="text-align:center; font-size: 15px">No hay información para los parámetros consultados...</td></tr>';
+                $('#tbCuentas tbody').append(strCuerpo);
+                return;
+            }
+            $.each(jsonData, function (i) {
+                
+                var contenidoEstado = obtenerDataEstado(this.CodEstado, this.NomEstado);
+                strCuerpo += '<tr class="option colorear" onclick="PintarTr($(this))" data-codventadeuda="' + this.CodVentaDeuda + '" data-cliente="' + this.Cliente + '"' +
+                                'data-documento="' + this.Documento + '" data-deuda="' + this.ImporteDeuda + '" data-saldo="' + this.ImporteSaldo + '"' +
+                                'data-codMoneda="' + this.CodMoneda + '" data-simboloMoneda="' + this.SimboloMoneda + '"' +
+                                'data-simboloMoneda="' + this.SimboloMoneda + '" data-ruc="'+ this.NroDocumento +'" data-direccion="'+ this.Direccion +'"' +
+                                'data-CodVenta="' + this.CodVenta + '"' +
+                                'data-CodDocumentoAfectado="' + this.CodDocumentoAfectado + '"' +
+                                'data-codEstado="' + this.CodEstado + '"' +
+                                'data-CodVentaCondicion="' + this.CodVentaCondicion + '"' +
+                                'data-MontoDetraccionSinConvertir="' + this.MontoDetraccionSinConvertir + '"' +
+                                'data-PoseeDetraccion="' + this.PoseeDetraccion + '" data-importepagopendiente="'+ this.ImportePagoPendiente +'"' +
+                                '>' +
+                                '<td>' + (i + 1) + '</td>' +
+                                '<td>' + this.FechaVenta + '</td>' +
+                                '<td>' + this.FechaCancelacion + '</td>' +
+                                `<td class="documento ${this.CountPaymentRegister === 0 ? '' : 'estiloColumnaEditar'}" ${this.CountPaymentRegister === 0 ? '' : 'onclick="verDetalleDocumento($(this).parent())" style="color: #36aae7"'} title="${this.Documento}">${this.Documento}</td>` +
+                                '<td>' + this.NomMoneda + '</td>' +
+                                '<td class="estiloColumnaEditar" title="' + this.Cliente + '">' + this.Cliente + '</td>' +
+                                '<td style="text-align: right">' + Number(this.ImporteDeuda).toFixed(CANTIDAD_DE_DECIMALES) + '</td>' +
+                                '<td style="text-align: right">' + Number(this.ImporteAmortizacion).toFixed(CANTIDAD_DE_DECIMALES) + '</td>' +
+                                '<td style="text-align: right">' + Number(this.ImporteSaldo).toFixed(CANTIDAD_DE_DECIMALES) + '</td>' +
+                                '<td style="text-align: center">' + this.NomUsuario + '</td>' +
+                                '<td style="text-align: center; white-space: nowrap;">' + this.NomVentaCondicionv + '</td>' +
+                                '<td style="text-align: center">' +
+                                '<span class="' + contenidoEstado + '">' + this.NomEstado + '</span>' +
+                                '</td>';
+                if ((this.CodEstado == 8 || this.CodEstado == 10 || this.CodEstado == 1) && this.CodVentaCondicion != 9) {
+                    strCuerpo += '<td></td>';
+                } else {
+                    strCuerpo += '<td style="text-align: center; vertical-align: middle; width: 110px">' +
+                                    '<span style="cursor:pointer"  class="label label-primary" onclick=" ' + (this.CodVentaCondicion == 9 ? 'VisualizarCuotas($(this).parent().parent())' : 'amortizarDeuda($(this).parent().parent())') + '">' + (this.CodVentaCondicion == 9 ? 'CUOTAS' : 'AMORTIZAR') + '</span>' +
+                                '</td>';
+                }
+                strCuerpo += '<td><span title="imprimir Documento" data-nombredocumento="' + this.URLNombreDocumento + '" onclick="ImprimirDocumento(' + this.CodVenta + ',$(this))" style="padding: 4px 6px; height: 28px;  top: 0px; left: -152px;">' +
+                                                '<i  class="material-icons dp48" aria-hidden="true" style="color: rgb(58, 115, 185);cursor: pointer; font-size: 18px">print</i>' +
+                                            '</span></td>';
+                strCuerpo += '</tr>';
+            })
+            $('#tbCuentas tbody').append(strCuerpo);
+        })
+    }
+    function obtenerDataEstado(CodEstado, NomEstado) {
+        
+        var respuesta = '';
+        if (CodEstado == 1) {
+            respuesta = 'label label-success';
+        }else if (CodEstado == 8) {
+            respuesta = 'label label-info';
+        } else if (CodEstado == 10) {
+            respuesta = 'label label-danger';
+        } else {
+            respuesta = 'label label-warning';
+        }
+        return respuesta;
+    }
+
+
+    function anularAmortizacion(tr) {
+        $('.optionDetalle').css('background-color', '');
+        tr.css('background-color', '#acd4ef');
+
+        var codVentaDeudaPago = tr.attr('data-codventadeudapago');
+        var codVentaDeuda = tr.attr('data-codventadeuda');
+        var documento = tr.attr('data-documento');
+
+        var codMonedaDeuda = tr.attr('data-codMoneda');
+        var simbolomoneda = tr.attr('data-simbolomoneda');
+
+        $('#divAnularAmortizacion').dialog({
+            buttons: {
+                'Anular': function () {
+                    if ($('#txtAreaElimina').val() == '') {
+                        ObjUtil.MostrarMensaje('Es necesario escribir el motivo de anulación.', 0);
+                        $('#txtAreaElimina').focus().select();
+                        return;
+                    }
+                    confirmarAnulacionAmortizacion(codVentaDeudaPago, codVentaDeuda, documento, codMonedaDeuda, simbolomoneda);
+                },
+                'Cancelar': function () {
+                    $('#divAnularAmortizacion').dialog('close');
+                }
+            },
+            close: function () {
+                $('.optionDetalle').css('background-color', '');
+                $('#txtAreaElimina').val('');
+            }
+        })
+        $('#divAnularAmortizacion').dialog('open');
+    }
+
+    function confirmarAnulacionAmortizacion(codVentaDeudaPago, codVentaDeuda, documento, codMonedaDeuda, simbolomoneda) {
+
+        var codCajaGestion = '@Session["CodCajaGestionRecaudador"].ToString()';
+
+        Data = {
+            Procedimiento: 'ProcVentaDeudaPago',
+            Parametro: codVentaDeudaPago + '|' + codCajaGestion + '|' + $('#txtAreaElimina').val(),
+            Indice: 30
+        }
+        $.getJSON(urlGeneral, Data, function (Datos) {
+            var jsonData = Datos['dt0'];
+            ObjUtil.MostrarMensaje(jsonData[0].DesResultado, jsonData[0].CodResultado);
+            if (jsonData[0].CodResultado == 1) {
+                listarDeudas();
+                listarDetalle(codVentaDeuda, documento, codMonedaDeuda, simbolomoneda);
+                $('#divAnularAmortizacion').dialog('close');
+            }
+        })
+    }
+
+    function amortizarDeuda(tr) {
+        if (codCajaGestion == "" || codCajaGestion == 0) {
+            //$('.contenedorPrincipal').html("");
+            ObjUtil.MostrarMensaje("No cuenta con caja aperturada para la venta", 0);
+        } else {           
+
+            $('.option').css('background-color', '');
+            tr.css('background-color', '#acd4ef');
+            $('.vistaAmortizacion').css('display', 'none');
+            $('#txtAmortizacion').val(0.00);
+            $('#labelAmortizacion').val(0.00);
+            $('#txtComentario').val('');
+
+            var cliente = tr.attr('data-cliente');
+            var documento = tr.attr('data-documento');
+            var totalDeuda = tr.attr('data-deuda');
+            var saldo = tr.attr('data-saldo');//
+            var importependiente = tr.attr("data-importepagopendiente");
+            var codVentaDeuda = tr.attr('data-codventadeuda');
+            var codMoneda = tr.attr('data-codMoneda');
+            var simboloMoneda = tr.attr('data-simboloMoneda');
+            var CodVenta = tr.attr('data-CodVenta');
+            var coddocumentoafectado = tr.attr('data-coddocumentoafectado');
+            var MontoDetraccionSinConvertir = tr.attr('data-MontoDetraccionSinConvertir');
+            var poseeDetraccion = tr.attr('data-PoseeDetraccion');
+            const state = tr.attr('data-codestado');
+            
+            $('#labelAmortizacion').text("Amortización: " + simboloMoneda);
+            $('#selectMonedaDeuda').val(codMoneda);
+            $('#selectMoneda').val(codMoneda);
+            $('#selectMonedaAmortizacion').val(codMoneda);
+            $('#txtAmortizacion').attr('data-codventadeuda', codVentaDeuda);
+
+            /*seteando el tipo de pago concepto por el codigo de venta*/
+            var TipoPago = ($('#TipoPagoConcepto').val() + '' == '1' ? 1 : 2);
+            getTipoPagoConcepto(CodVenta);
+            /**/
+            $('#txtcliente').val(cliente);
+            $('#txtDocumento').val(documento);
+            $('#txtDeudaTotal').val((Number(saldo) - Number(importependiente)).toFixed(CANTIDAD_DE_DECIMALES));
+            $('#txtSaldoDeuda').val(Number(saldo).toFixed(CANTIDAD_DE_DECIMALES));
+            var saldoInicial = 0;
+            saldoInicial = Number(saldo).toFixed(CANTIDAD_DE_DECIMALES);
+            ////////////////
+            $('#tablaCangeDocumento tbody').empty();
+            //if (coddocumentoafectado != DOCUMENTOS.NOTA_VENTA) {
+            obtenerDataDocumento(CodVenta, coddocumentoafectado);
+            habilitarTabla(coddocumentoafectado);
+            getDocumentosCanje(coddocumentoafectado);
+            ////////////////            
+            if (TipoPago == 2) {
+                $('#FilaAutoDetraccion').css('display', 'none');
+            }
+            ////////////////
+            document.getElementById("checkMontoPagado").checked = false;
+
+            const overview = document.querySelector("#overview-divRegistroPago")
+            let esSuspendido = state == 29;
+
+            const showButton = true//Number(totalDeuda) === Number(saldo);
+
+            overview.style.display = !esSuspendido ? "none" : "";
+
+            $('#divRegistroPago').dialog({
+                title: "Registro Pago [" + documento + "]",
+                buttons: [
+                    showButton && {
+                        id: "buttonActive",
+                        text: (esSuspendido ? "Activar" : "Desactivar"),
+                        click: async () => {
+                            const request = {
+                                Procedimiento: 'ProcVentaDeudaPago',
+                                Parametro: codVentaDeuda + '|' + (esSuspendido ? 0 : 1),
+                                Indice: 31
+                            }
+
+                            const response = await fetch(urlGeneral, DataFetch(request, 'POST')).then(res => res.json());
+                            const data = response['dt0'][0];
+
+                            ObjUtil.MostrarMensaje(data.DesResultado, data.CodResultado);
+
+                            if (data.CodResultado == 1) {
+                                listarDeudas();
+                                overview.style.display = esSuspendido ? "none" : "";
+
+                                esSuspendido = !esSuspendido;
+                                const buttonActive = document.getElementById("buttonActive");
+                                buttonActive.style.padding = "0rem 1rem"
+                                buttonActive.textContent = esSuspendido ? 'Activar' : 'Desactivar'
+                            }
+                            
+                        }
+                    },
+                    {
+                        text: "Guardar",
+                        click: function() {
+                            if ($('#txtAmortizacion').val() == 0 || $('#txtAmortizacion').val() == '') {
+                                ObjUtil.MostrarMensaje("Es necesario ingresar un monto válido.", 0);
+                                $('#txtAmortizacion').focus().select();
+                                return;
+                            }
+                            let pagoCancelado = document.getElementById("checkMontoPagado").checked ? 1 : 0;
+                            if (pagoCancelado == 1 && ($('#txtRecibiDe').val() == 0 || $('#txtRecibiDe').val() == '')) {
+                                ObjUtil.MostrarMensaje("Es necesario ingresar el nombre de la persona que realizó el pago.", 0);
+                                $('#txtRecibiDe').focus().select();
+                                return;
+                            }
+                            ObjUtil.EfectoCargar('DivContenedor'); //-->inicio de carga
+                            var validacion = validarIngresoProducto();
+                            if (validacion + '' != 'undefined') {
+                                var codValidacion = validacion.split('|')[0];
+                                var mensajeValidacion = validacion.split('|')[1];
+                                if (codValidacion == 1) {
+                                    ObjUtil.MostrarMensaje(mensajeValidacion, 2);
+                                    ObjUtil.QuitarEfectoCargar();
+                                    return "";
+                                }
+                            }
+                            $('#divRegistroPago').dialog({
+                                buttons: {}
+                            });
+                            GuardarPago(CodVenta, codVentaDeuda);
+                        }
+                    },
+                    {
+                        text: "Cancelar",
+                        click: function() {
+                            $(this).dialog('close');
+                        }
+                    }                    
+                ].filter(Boolean),
+                close: function () {
+                    limpiarDivRegistro();
+                    $('.option').css('background-color', '');
+                    saldoInicial = 0;
+                }
+            });
+            accionTipoCambio();
+            $('#divRegistroPago').dialog('open');
+            
+        }
+    }
+
+    function obtenerDataDocumento(codVenta, coddocumentoafectado) {
+        
+        Data = {
+            Procedimiento: 'ProcVentaDeuda',
+            Parametro: codVenta,
+            Indice: 11
+        }
+        $.getJSON(urlGeneral, Data, function (Datos) {
+            var jsonCabecera = Datos['dt0']
+            var jsonDetalle = Datos['dt1'];
+            var AreaTextoCadena = '';
+            obtenerDatosClienteCobranza(jsonCabecera[0].CodCliente);
+            $('#txtAmortizacion').attr('data-MontoDetraccionSinConvertir', jsonCabecera[0].MontoDetraccionSinConvertir);
+            $.each(jsonDetalle, function () {
+                AreaTextoCadena += '-' + this.NomProducto + ((this.Marca + '').toUpperCase().toString() == 'NULL' ? '' : ", " + this.Marca) + (
+                                (this.Caracteristicas + '').toUpperCase().toString() == 'NULL' ? '' : ", " + this.Caracteristicas) + '\n';
+            });
+            $('#txtDescripcion').val(AreaTextoCadena);
+            $('#txtDescripcion').removeAttr('readonly');
+            if (coddocumentoafectado != DOCUMENTOS.NOTA_VENTA) {
+                $('#txtDescripcion').attr('readonly', 'readonly');
+            }
+        });
+    }
+
+    function obtenerDatosClienteCobranza(codCliente) {
+        Data = {
+            Procedimiento: 'ProcCliente',
+            Parametro: codCliente,
+            Indice: 14
+        }
+        $.getJSON(urlGeneral, Data, function (Datos) {
+            //$('#tbClientesSimple tbody').empty();
+            var jsonData = Datos['dt0'][0];
+            $('#txtcliente').val(jsonData.NomCliente);
+            $('#txtcliente').attr('attr-codCliente', jsonData.CodCliente);
+            $('#txtcliente').attr('attr-CodDocumentoIdentidadTipo', jsonData.CodDocumentoIdentidadTipo);
+            $('#txtcliente').attr('attr-PaternoCliente', jsonData.PaternoCliente);
+            $('#txtcliente').attr('attr-MaternoCliente', jsonData.MaternoCliente);
+            $('#txtcliente').attr('attr-nombreCliente', jsonData.NomCliente);
+            $('#txtcliente').attr('attr-CorreoElectronico', jsonData.CorreoElectronico);
+            $('#txtcliente').attr('attr-Telefono', jsonData.Telefono);
+            $('#txtcliente').attr('attr-Direccion', jsonData.Direccion);
+            $('#txtcliente').attr('attr-NroDocumento', jsonData.NroDocumento);
+            $('#txtcliente').attr('data-codUbigeo', jsonData.CodUbigeoClienteSunat);
+            $('#txtcliente').attr('data-nomubigeo', jsonData.NomUbigeoCompleto);
+
+
+        });
+
+    }
+
+
+
+    function cargarClientes() {
+        Data = {
+            Procedimiento: 'ProcCliente',
+            Parametro: '',
+            Indice: 13
+        }
+
+        $.getJSON(urlGeneral, Data, function (Datos) {
+            var jsonData = Datos['dt0'];
+            var strHtml = '<option value="0">--- Todos ---</option>';
+            $('#selClientes').empty();
+            if (jsonData.length != 0) {
+                $.each(jsonData, function () {
+                    strHtml += '<option value="' + this.CodCliente + '">' + this.NomCliente + '</option>';
+                })
+            }
+
+            $('#selClientes').append(strHtml);
+            $('#selClientes').select2();
+            obtenerEstados();
+        })
+    }
+
+
+
+    function convertirDecimal(elemento) {
+        var amortizacion = (elemento.val() == '' ? 0 : elemento.val());
+        amortizacion = convertirSinComas(amortizacion);
+        amortizacion = Number(amortizacion).toFixed(CANTIDAD_DE_DECIMALES);
+        elemento.val(addCommas(amortizacion));
+    }
+
+    function comprobarEnterAmortizacion(e) {
+        if (e.which == 13) {
+            if ($('#txtAmortizacion').val() == 0 || $('#txtAmortizacion').val() == '') {
+                ObjUtil.MostrarMensaje("Es necesario ingresar un monto válido.", 0);
+                $('#txtAmortizacion').focus().select();
+                return;
+            }
+            $('#txtRecibiDe').focus().select();
+        }
+    }
+
+    function comprobarEnterGuardar(e) {
+        if (e.which == 13) {
+            if ($('#txtAmortizacion').val() == 0 || $('#txtAmortizacion').val() == '') {
+                ObjUtil.MostrarMensaje("Es necesario ingresar un monto válido.", 0);
+                $('#txtAmortizacion').focus().select();
+                return;
+            }
+
+            if ($('#txtRecibiDe').val() == 0 || $('#txtRecibiDe').val() == '') {
+                //ObjUtil.MostrarMensaje("Es necesario ingresar el nombre de la persona que realizó el pago.", 0);
+                //$('#txtRecibiDe').focus().select();
+                //return;
+            }
+
+            var amortizacion = ($('#txtAmortizacion').val() == '' ? 0 : $('#txtAmortizacion').val());
+            var codVentaDeuda = $('#txtAmortizacion').attr('data-codventadeuda');
+            guardarPago(codVentaDeuda);
+        }
+    }
+
+    function limpiarDivRegistro() {
+        $('#txtcliente').val('');
+        $('#txtDocumento').val('');
+        $('#txtDeudaTotal').val('');
+        $('#txtSaldoDeuda').val('');
+        $('#txtAmortizacion').val('');
+        $('#txtRecibiDe').val('');
+        $('#txtSaldoDeuda').removeAttr('data-codventadeuda');
+        $('#txtTipoCambio').val('');
+        $('#txtMontoAmortizacion').val('');
+        $('#TipoPagoConcepto option:first').prop('selected', true);
+        ActualizarAmortizacionPorTipoPago();
+    }
+
+    function reimprimirVoucher(tr) {
+        var codVentaDeudaPago = tr.attr('data-codventadeudapago');
+        var URLNombreDocumento = tr.attr('data-UrlNombreDocumento');//"_ReciboPago"
+        var CodVenta = tr.attr('data-CodVenta');
+
+        //imprimirVoucher(codVentaDeudaPago);
+
+        var codDocumentoImpresion = CodVenta;
+        if (CodVenta == 0) {
+            codDocumentoImpresion = codVentaDeudaPago;
+        }
+
+        ImprimirDocumentosElectronico(codDocumentoImpresion, URLNombreDocumento, TIPOVENTANA.COBRANZA);//, )
+
+    }
+
+    @*function imprimirVoucher(codVentaDeudaPago) {
+        Data = {
+            Procedimiento: 'ProcVentaDeudaPago',
+            Parametro: codVentaDeudaPago,
+            Indice: 11
+        }
+        $.getJSON(urlGeneral, Data, function (Datos) {
+            var jsonData = Datos['dt0'];
+            var nombreDocumento = jsonData[0].NomDocumento;
+            var documento = jsonData[0].SerieDocumento + ' - ' + jsonData[0].NumDocumento;
+            var documentoAfectado = jsonData[0].DocumentoAfectado;
+            var fechaPago = jsonData[0].FechaCreacion;
+            var nomUsuarioImp = '@Session["NomPersona"].ToString()';
+            var fechaHoraActual = '@DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")';
+            var recibide = jsonData[0].ReciboDe;
+            var cajero = jsonData[0].UsuarioRegistro;
+            var importe = jsonData[0].ImportePago;
+            var saldo = jsonData[0].ImporteSaldo;
+
+            $('#lblNombreDocumento').text(nombreDocumento);
+            $('#lblSubTitulo').text(documento);
+            $('#lblDocumento').text(documentoAfectado);
+            $('#lblFechaPago').text(fechaPago);
+            $('#lblRecibiDe').text(recibide);
+            $('#lblCajero').text(cajero);
+            $('#lblImporte').text(Number(importe).toFixed(CANTIDAD_DE_DECIMALES));
+            $('#lblsaldoproduccion').text(Number(saldo).toFixed(CANTIDAD_DE_DECIMALES));
+            $('#txtNombreUsuario').text(nomUsuarioImp);
+            $('#lblfechaImpresion').text(fechaHoraActual); // textreeimpresion
+            $("#divImprimir").printArea();
+        })
+    }*@
+
+    function ImprimirDocumento(codigoVenta, elemento, esGuia) {
+        var esReimpresion = true;
+        var nombreDocumentoImpresion = elemento.attr('data-nombredocumento');
+        ImprimirDocumentosElectronico(codigoVenta, nombreDocumentoImpresion, null, esReimpresion);
+    }
+
+    function ActualizarAmortizacionPorTipoPago() {
+        var tipoPago = $('#TipoPagoConcepto').val();
+        var montoDetraccion = $('#txtAmortizacion').attr('data-MontoDetraccionSinConvertir');
+        var tipoPagoTemporal = {
+            P_Bruto: 2,
+            P_Detraccion: 1
+        };
+        if (Number(tipoPago) == tipoPagoTemporal.P_Detraccion) {// tipo 1 detraccion
+            $('#txtAmortizacion').val(montoDetraccion);
+            $('#FilaAutoDetraccion').css('display', '');
+        } else {
+            $('#txtAmortizacion').val(0);
+            $('#FilaAutoDetraccion').css('display', 'none');
+        }
+        actualizarSaldo();
+    }
+
+
+</script>
