@@ -1,0 +1,21 @@
+
+<script>
+    var permiso = false;
+    console.log("permiso de antes de entrar: ",permiso)
+</script>
+
+@{
+    String[] Acciones = new String[20];
+    Acciones = Session["Acciones"] as String[];
+
+    for (int i = 0; i < Acciones.Length; i++)
+    {
+        if (XBEST.Enum.EnumAcciones.PERMISOPRUEBA.ToString() + "" == Acciones[i] + "")
+        {
+            <script>
+                permiso = true;
+                console.log("permiso para saber si entro: ",permiso);
+            </script>
+        }
+    }
+}

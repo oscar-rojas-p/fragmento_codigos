@@ -1,0 +1,54 @@
+if(permiso==true) validarVencimientos();
+
+async function validarVencimientos(){
+	const Data = {
+		Procedimiento: 'ProcGestionInfraestructuraDominio',
+		Parametro: '',
+		Indice: 11
+	}
+
+	const Datos = await fetch(urlGeneral, DataFetch(Data, 'POST')).then((res) => res.json());
+	let jsondata1 = Datos['dt0'];   //dominios por vencer
+	let jsondata2 = Datos['dt1'];   //subdominios por vencer
+	if((jsondata1.length>0)||(jsondata2.length>0)){
+		if(jsondata1.length>0){
+			var strDominios="";
+			jsondata1.forEach(function(data){
+				strDominios += `<h4 style=" text-align: center;">Dominio: ${data.NomDominio}</h4><h4 style=" text-align: center;">Fecha de vencimiento: ${formato(data.ExpiracionDominio.slice(0,-9))}</h4>`
+			})
+			$('#DominiosPorVencer').append(strDominios)
+		}
+		if(jsondata2.length>0){
+			var strSubdominios="";
+			jsondata2.forEach(function(data){
+				strSubdominios += `<h4 style=" text-align: center;">Sub Dominio: ${data.NomSubDominio}</h4><h4 style=" text-align: center;">Fecha de vencimiento: ${formato(data.ExpiracionSSL.slice(0,-9))}</h4>`
+			})
+			$('#SubdominiosPorVencer').append(strSubdominios)
+		}
+			mostrarAvisoVencimiento();    
+	}
+}
+
+async function mostrarAvisoVencimiento(){
+	$('#bloquea').css('display','')
+	$('#DivAplicaciones').css('display', 'none');
+	$('#divDialogAviso').dialog({
+	title: "Aviso",
+		buttons: {
+			'Aceptar': function () {
+				$('#bloquea').css('display','none')
+				$('#DivAplicaciones').css('display', '');
+				$(this).dialog("close");
+			}
+		},
+		close: function () {
+			$('#bloquea').css('display','none')
+			$('#DivAplicaciones').css('display', '');
+		}
+	});
+$('#divDialogAviso').dialog('open');
+}
+
+function formato(texto){    //cambiar formato de yyyy-mm-dd a dd/mm/yyyy
+	return texto.replace(/^(\d{4})-(\d{2})-(\d{2})$/g,'$3/$2/$1');
+}

@@ -1,0 +1,7 @@
+<script src="~/Scripts/Entidades/Sucursales.js"></script>
+<script 
+src="~/Scripts/Entidades/Sucursales.js@("?v="+DateTime.Now.ToString("yyyyMMddhmmss"))"></script>
+
+*************
+cuando se importa un archivo js desde un html a veces los cambios no se actualizan al modificar algo en el js por ello se pone {@("?v="+DateTime.Now.ToString("yyyyMMddhmmss"))"} despues de la ubicacion del archivo pero antes de la etiqueta de cierre
+*************

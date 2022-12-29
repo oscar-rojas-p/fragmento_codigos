@@ -1,0 +1,30 @@
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+.cargando{
+                width: 100%;height: 100%;
+                overflow: hidden;
+                top: 0px;
+                left: 0px;
+                z-index: auto;
+                text-align: center;
+                position:absolute;
+                background-color: #FFFFFF;
+                opacity:0.5;
+                filter:alpha(opacity=40);
+        }
+
+<div id="bloquea" class="cargando" style="display:none; "></div>
+<div id="divDialogAviso" class="modal modal-fixed-footer ui-dialog-content ui-widget-content" style="display: none;">
+	<div class="">
+		<div class="form-horizontal margenTopParaModal" style="text-align: center;" role="form">
+			<div>
+				<h3 style="color: red;"><i class='fas fa-exclamation-triangle'></i> <b>ALERTA!!!</b></h3>
+				<h4 style="color: red;"><b>Pronta Expiración de Certificado</b></h4>
+				<br>
+				<div id="DominiosPorVencer"></div>  
+				<br>
+				<div id="SubdominiosPorVencer"></div>
+			</div>
+		</div>
+	</div>
+</div>
