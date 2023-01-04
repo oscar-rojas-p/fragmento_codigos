@@ -1,0 +1,7 @@
+//funcion para al cambio de un select modificar dos inputs con el valor de este select
+
+document.querySelector('#codturno').addEventListener('change', function(){
+            let nombreTurno = this.options[this.selectedIndex].text
+            $('#inputHoraInicio').val(nombreTurno.slice(0,5));
+            $('#inputHoraFin').val(nombreTurno.slice(8,13));
+        })
