@@ -1,0 +1,29 @@
+//MODAL CON 3 BOTONES QUE SOLO VA A MOSTRAR EL TERCER CUANDO EXISTA EL indiceSobreTiempo
+
+DetalleProgramacion').dialog({
+	title : `Registrar Horas Extras Programadas [${diaSemana}]`,
+	buttons: {
+		"Guardar": () => {
+			$('#divTurnos').css('display','')
+			$('#divHoraRefrigerio').css('display','')
+			$('#divDescanso').css('display','')
+			guardarHoraExtra(fila,codigo,codTurno,indiceSobreTiempo)
+		},
+		"Cerrar": () => {
+			$('#divTurnos').css('display','')
+			$('#divHoraRefrigerio').css('display','')
+			$('#divDescanso').css('display','')
+			$('#DivDetalleProgramacion').dialog('close');
+		},
+		"Eliminar": () => {
+			console.log("se elimino")
+			$('#DivDetalleProgramacion').dialog('close');
+		}
+	},
+	close: () => {
+		$('#divTurnos').css('display','')
+		$('#divHoraRefrigerio').css('display','')
+		$('#divDescanso').css('display','')
+	}
+})
+if(!indiceSobreTiempo)$('.ui-dialog-buttonpane button:contains("Eliminar")').button().hide();	//OCULTA EN CASO NO TENGA DATOS
