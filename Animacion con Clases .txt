@@ -1,0 +1,25 @@
+//ANIMACION Y CLASE QUE REALIZA LA ANIMACION
+
+//se pone doble arroba al keyframes por que solo lo capta con un arroba cuando es un archivo neto de css, este es un archivo de cshtml
+<style>
+
+    @@keyframes anim{
+        0% {background-color: ;}
+        50% {background-color: #ff6961;} 
+        100% {background-color: ;} 
+    }
+    
+    .celdaSinDatos {
+        animation: anim 1s linear ;
+    }
+
+</style>
+
+<script>
+	if(true){
+		//ELIMINA Y AGREGA LA CLASE QUE LE DA LA ANIMACION DE COLOR ROJO
+		document.getElementById(`celdaVerificadora-${i}`).classList.remove('celdaSinDatos')
+		setTimeout(() => document.getElementById(`celdaVerificadora-${i}`).classList.add('celdaSinDatos'), 100)
+		//
+	}
+</script>
