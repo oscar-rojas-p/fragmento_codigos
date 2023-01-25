@@ -1,3 +1,4 @@
+****
 
 "directorio <> carpeta"
 "HEAD -> cabezera de los commits"
@@ -21,4 +22,5 @@ git commit -m "nombre del commit que se subira"		---	realiza un commit de todos 
 
 git fetch
 git pull
-git push
+
+git push	---sube todos los commits que se hayan realizado al repositorio remoto(GitHub)
