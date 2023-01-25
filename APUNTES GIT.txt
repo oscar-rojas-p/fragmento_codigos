@@ -1,0 +1,24 @@
+
+"directorio <> carpeta"
+"HEAD -> cabezera de los commits"
+
+repositorio local(area donde se trabaja)	->	repositorio temporal	->	repositorio remoto
+
+git log 	---muestra los commits (para que ya no muestre mas comits presionar "Q")
+git log -2 	---muestra los 2 ultimos commits 
+
+git status		---muestra el estado de los archivos y si es que hay alguno que esta modificado se muestra de rojo
+
+git add . 	--- añade TODOS los archivos al repositorio temporal
+git add "archivo.html"	--- añade solo archivo.html al repositorio temporal
+git reset .	---regresa TODOS los cambios del repositorio temporal al repositorio local
+git reset "archivo.html"	---regresa solo archivo.html los cambios del repositorio temporal al repositorio local 
+
+git restore .	---descarta todos los cambios que se hayan hecho y que ya no se quieren ver en el repositorio local
+git restore "archivo.html"		---descarta los cambios que se hayan hecho en "archivo.html" y que ya no se quieren ver en el repositorio local
+
+git commit -m "nombre del commit que se subira"		---	realiza un commit de todos los archivos guardados con el git add para luego subirlo al repositorio remoto con git push
+
+git fetch
+git pull
+git push
