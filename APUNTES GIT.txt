@@ -1,9 +1,13 @@
-****
+****"Q" detiene el terminal de git cuando esta ejecutandose algo****
 
 "directorio <> carpeta"
 "HEAD -> cabezera de los commits"
 
 repositorio local(area donde se trabaja)	->	repositorio temporal	->	repositorio remoto
+
+git config --list		---muestra la lista de la configuracion del git en el sistema
+git config --global user.name "Tu nombre"		----cambia el nomber de usuario que se usara de manera global en git 
+git config --global user.email "tuemail@tudominio.com"		----cambia el email de usuario que se usara de manera global en git 
 
 git log 	---muestra los commits (para que ya no muestre mas comits presionar "Q")
 git log -2 	---muestra los 2 ultimos commits 
@@ -24,3 +28,41 @@ git fetch
 git pull
 
 git push	---sube todos los commits que se hayan realizado al repositorio remoto(GitHub)
+
+
+
+///////////////////////TIPS QUE OFRECE GIT////////////////////////////////
+Estos son comandos comunes de Git que se usan en varias situaciones:
+
+iniciar un área de trabajo (ver también: tutorial de ayuda de git)
+   clone: Clonar un repositorio en un nuevo directorio
+   init: Crea un repositorio Git vacío o reinicializa uno existente
+
+trabajar en el cambio actual (ver también: ayuda de git todos los días)
+   add: Agregar contenido de archivo al índice
+   mv: Mover o cambiar el nombre de un archivo, un directorio o un enlace simbólico
+   restore: Restaurar archivos de árbol de trabajo
+   rm: Eliminar archivos del árbol de trabajo y del índice
+
+examinar el historial y el estado (ver también: revisiones de ayuda de git)
+   bisect: Utilice la búsqueda binaria para encontrar la confirmación que introdujo un error
+   diff: Muestra cambios entre commits, commit y árbol de trabajo, etc.
+   grep: Imprime líneas que coinciden con un patrón
+   log: Mostrar registros de confirmación
+   show: Mostrar varios tipos de objetos
+   status: Mostrar el estado del árbol de trabajo
+
+crecer, marcar y modificar su historia común
+   branch: Enumerar, crear o eliminar sucursales
+   commit: Registrar cambios en el repositorio
+   merge: Unir dos o más historias de desarrollo juntas
+   rebase: Reapply confirma sobre otro consejo base
+   reset: Restablecer HEAD actual al estado especificado
+   switch: Cambiar de rama
+   tag: Crear, enumerar, eliminar o verificar un objeto de etiqueta firmado con GPG
+
+colaborar (ver también: flujos de trabajo de ayuda de git)
+   fetch: Descargar objetos y referencias de otro repositorio
+   pull: Fetch e integre con otro repositorio o una sucursal local
+   push: Actualizar referencias remotas junto con objetos asociados
+//////////////////////////////////////////////////////////////////////////////
