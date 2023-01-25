@@ -25,7 +25,8 @@ git restore "archivo.html"		---descarta los cambios que se hayan hecho en "archi
 git commit -m "nombre del commit que se subira"		---	realiza un commit de todos los archivos guardados con el git add para luego subirlo al repositorio remoto con git push
 
 git fetch
-git pull
+git pull	---trae todo de la rama actual
+git pull origin branchName	---trae todo de la rama branchName al repositorio local
 
 git push	---sube todos los commits que se hayan realizado al repositorio remoto(GitHub)
 
